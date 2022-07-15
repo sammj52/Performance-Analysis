@@ -1,0 +1,116 @@
+'''This script performs Enhanced Modified Dietz calculation. Written by Sam J.'''
+
+month_length = 31
+
+thirty_day_month = ["apr", "jun", "sept", "nov"]
+month = input("Enter Month (abbr.): ")
+if month.lower() in thirty_day_month:
+	month_length -= 1
+elif month.lower() == "feb":
+	leap = input("Is it a leap year? (y/n):")
+	if leap.lower() == "y":
+		month_length -= 2
+	elif leap.lower() == "n":
+		month_length -= 3
+	else:
+		print("Restart. Didn't type 'y' or 'n'.")
+
+
+'''Calculates Enhanced Modified Dietz for portfolio accounts that start up in a month.'''
+def startup():
+	bmv = 0
+	emv = input("Enter Ending Market Value: ")
+	emv = float(emv)
+
+	empty_cf = " "
+	cf = input("Enter Intial Cash Flow, followed by other cash flows (separate w/ space): ")
+	cf_list = cf.split(empty_cf)
+
+	empty_days = " "
+	days = input("Enter Intial CF date, followed by other cash flow dates (separate with space): ")
+	days_list = days.split(empty_days)
+
+	w_list = []
+
+	bod_eod = input("Calculating for bod or eod? (bod/eod): ")
+	if bod_eod.lower() == "bod":
+		for day_num in days_list:
+			item = int(day_num)
+			w = (month_length + 1 - item)/(month_length + 1 - int(days_list[0]))
+			w_list.append(w)
+	elif bod_eod.lower() == "eod":
+		for day_num in days_list:
+			item = int(day_num)
+			w = (month_length - item)/(month_length - int(days_list[0]))
+			w_list.append(w)
+	else:
+		print("Restart. Didn't type bod/eod.")
+
+	ba_list = []
+	for cf1, w1 in zip(cf_list, w_list):
+		ba_list.append(float(cf1) * w1)
+	#print(ba_list)
+
+	ea_list = []
+	for cf2, ba1 in zip(cf_list, ba_list):
+		ea_list.append(float(cf2) - ba1)
+	#print(ea_list)
+
+	bamv = bmv + sum(ba_list)
+	eamv = emv - sum(ea_list)
+
+	ror = ((eamv/bamv)-1)*100
+
+	print("The performance for this startup month is " + str(ror) + "%.")
+
+
+'''Calculates Enhanced Modified Dietz for portfolios that liquidate their funds within a month.'''
+def selloff():
+	emv = 0
+	bmv = input("Enter Beginning Market Value: ")
+	bmv = float(bmv)
+
+	empty_cf = " "
+	cf = input("Enter Cash Flows, ending with final liquidating CF (separate w/ space): ")
+	cf_list = cf.split(empty_cf)
+
+	empty_days = " "
+	days = input("Enter CF dates, ending with final liquidating CF date (separate with space): ")
+	days_list = days.split(empty_days)
+
+	w_list = []
+
+	bod_eod = input("Calculating for bod or eod? (bod/eod): ")
+	if bod_eod.lower() == "bod":
+		for day_num in days_list:
+			item = int(day_num)
+			w = (int(days_list[-1]) - item)/(int(days_list[-1]) - 1)
+			w_list.append(w)
+	elif bod_eod.lower() == "eod":
+		for day_num in days_list:
+			item = int(day_num)
+			w = (int(days_list[-1]) - item)/int(days_list[-1])
+			w_list.append(w)
+	else:
+		print("Restart. Didn't type bod/eod.")
+
+	ba_list = []
+	for cf1, w1 in zip(cf_list, w_list):
+		ba_list.append(float(cf1) * w1)
+	#print(ba_list)
+
+	ea_list = []
+	for cf2, ba1 in zip(cf_list, ba_list):
+		ea_list.append(float(cf2) - ba1)
+	#print(ea_list)
+
+	bamv = bmv + sum(ba_list)
+	eamv = emv - sum(ea_list)
+
+	ror = ((eamv/bamv)-1)*100
+
+	print("The performance for this startup month is " + str(ror) + "%.")
+
+
+#startup()
+selloff()
