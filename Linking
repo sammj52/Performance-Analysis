@@ -1,0 +1,85 @@
+'''This programs executes all linking calculations. Calculates returns over various time periods.'''
+
+import numpy as np 
+
+'''This function links returns and calculates the cumulative return.'''
+def cum_return():
+	empty_r = " "
+	r = input("Enter returns of a period (separated by space): ")
+	r_list = r.split(empty_r)
+	#print(r_list)
+	
+	float_rlist = np.array(r_list, dtype = float)
+
+	final_rlist = []
+	for returns in float_rlist:
+		final_rlist.append((returns/100) + 1)
+
+	crr = np.prod(final_rlist)
+	#print(crr)
+
+	cr = (crr-1)*100
+	print("The Cumulative Return is " + str(cr) + "%.")
+
+
+'''This function converts cumulative returns to annualized returns.'''
+def cr_to_ar():
+	cr = input("Enter Cumulative Return: ")
+	cr = float(cr)
+
+	crr = (cr/100) + 1
+	
+	period = 12
+	mq = input("Calculating for months or quarters? (m/q): ")
+	if mq == "q":
+		period = 4
+
+	n = input("How many periods for the calculation?: ")
+	
+	arr = crr**(float(period)/float(n))
+
+	ar = (arr - 1)*100
+
+	print("The Annualized Return is " + str(ar) + "%.")
+
+
+'''This function converts annualized returns to cumulative returns.'''
+def ar_to_cr():
+	ar = input("Enter Annualized Return: ")
+	ar = float(ar)
+
+	arr = (ar/100) + 1
+
+	period = 12
+	mq = input("Calculating for months or quarters? (m/q): ")
+	if mq == "q":
+		period = 4
+
+	n = input("How many periods for the calculation?: ")
+
+	crr = arr**(float(n)/float(period))
+
+	cr = (crr-1)*100
+
+	print("The Cumulative Return is " + str(cr) + "%.")
+
+
+'''This function breaks up cumulative returns into monthly returns.'''
+def cr_to_monthly():
+	cr = input("Enter Cumulative Return: ")
+	cr = float(cr)
+
+	crr = (cr/100) + 1
+
+	n = input("How many months for the return stream?: ")  #3 months to a quarter
+	mrr = crr**(1/float(n))
+
+	mr = (mrr-1)*100
+
+	print("The monthly return is " + str(mr) + "%.")
+
+
+#cum_return()
+#cr_to_ar()
+#ar_to_cr()
+cr_to_monthly()
